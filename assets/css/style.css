@@ -1,0 +1,1098 @@
+/**
+ * Bookstore Theme - Main Stylesheet
+ *
+ * This file contains all the styling for the Bookstore Theme.
+ * The theme follows a mobile-first responsive design approach.
+ *
+ * @package BookstoreTheme
+ */
+
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 16px;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	line-height: 1.6;
+	color: #333;
+	background-color: #ffffff;
+}
+
+a {
+	color: #0066cc;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+a:hover {
+	color: #004499;
+	text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin-bottom: 1rem;
+	line-height: 1.2;
+	font-weight: 600;
+}
+
+p {
+	margin-bottom: 1rem;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* ========================================
+   SITE STRUCTURE
+   ======================================== */
+
+.site {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.site-main {
+	flex: 1;
+	max-width: 1200px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 2rem 1rem;
+}
+
+.content-wrapper {
+	width: 100%;
+}
+
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.site-header {
+	background-color: #f8f9fa;
+	border-bottom: 1px solid #ddd;
+	padding: 1rem 0;
+}
+
+.header-wrapper {
+	max-width: 1200px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.site-branding {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex: 1;
+}
+
+.site-logo {
+	max-width: 100px;
+	height: auto;
+}
+
+.site-title {
+	margin: 0;
+	font-size: 1.75rem;
+	line-height: 1.2;
+}
+
+.site-title a {
+	color: #333;
+}
+
+.site-title a:hover {
+	color: #0066cc;
+}
+
+.site-description {
+	margin: 0.25rem 0 0 0;
+	font-size: 0.875rem;
+	color: #666;
+}
+
+/* ========================================
+   NAVIGATION STYLES
+   ======================================== */
+
+.site-navigation {
+	max-width: 1200px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 1rem;
+}
+
+.site-navigation ul {
+	list-style: none;
+	display: flex;
+	gap: 0;
+}
+
+.site-navigation a {
+	display: block;
+	padding: 0.75rem 1rem;
+	color: #333;
+}
+
+.site-navigation a:hover {
+	background-color: #f0f0f0;
+	color: #0066cc;
+}
+
+.menu-toggle {
+	display: none;
+	background: none;
+	border: 1px solid #ddd;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	font-size: 0.875rem;
+}
+
+.hamburger-icon {
+	display: inline-block;
+	margin-right: 0.5rem;
+}
+
+.hamburger-icon span {
+	display: block;
+	width: 20px;
+	height: 2px;
+	background-color: #333;
+	margin: 4px 0;
+	transition: 0.3s;
+}
+
+/* ========================================
+   FOOTER STYLES
+   ======================================== */
+
+.site-footer {
+	background-color: #2c3e50;
+	color: #ecf0f1;
+	padding: 3rem 1rem;
+	margin-top: 3rem;
+}
+
+.footer-content {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.footer-widgets {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 2rem;
+	margin-bottom: 2rem;
+}
+
+.footer-widget-column .widget {
+	margin-bottom: 2rem;
+}
+
+.footer-widget-column .widget-title {
+	color: #ecf0f1;
+	margin-bottom: 1rem;
+	font-size: 1.1rem;
+}
+
+.footer-widget-column .widget a {
+	color: #bdc3c7;
+}
+
+.footer-widget-column .widget a:hover {
+	color: #3498db;
+}
+
+.footer-navigation {
+	border-top: 1px solid #34495e;
+	padding-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+.footer-navigation ul {
+	list-style: none;
+	display: flex;
+	gap: 0;
+	flex-wrap: wrap;
+}
+
+.footer-navigation a {
+	display: block;
+	padding: 0.5rem 1rem;
+	color: #bdc3c7;
+}
+
+.footer-navigation a:hover {
+	color: #3498db;
+	text-decoration: none;
+}
+
+.site-info {
+	border-top: 1px solid #34495e;
+	padding-top: 2rem;
+	text-align: center;
+	color: #bdc3c7;
+	font-size: 0.875rem;
+}
+
+.site-info a {
+	color: #3498db;
+}
+
+/* ========================================
+   WIDGETS & SIDEBAR
+   ======================================== */
+
+.widget-area {
+	margin-top: 2rem;
+	padding: 1rem;
+	background-color: #f8f9fa;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.widget {
+	margin-bottom: 2rem;
+}
+
+.widget-title {
+	background-color: #f0f0f0;
+	padding: 0.75rem 1rem;
+	margin: 0 -1rem 1rem -1rem;
+	border-bottom: 2px solid #0066cc;
+}
+
+.widget ul {
+	list-style: none;
+}
+
+.widget li {
+	padding: 0.5rem 0;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.widget li:last-child {
+	border-bottom: none;
+}
+
+.widget a {
+	color: #0066cc;
+	display: block;
+}
+
+/* ========================================
+   PAGE HEADER & TITLES
+   ======================================== */
+
+.page-header {
+	margin-bottom: 2rem;
+	padding: 2rem 0;
+	border-bottom: 2px solid #0066cc;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+	color: #333;
+}
+
+.archive-description {
+	color: #666;
+	font-size: 1.1rem;
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+
+.btn {
+	display: inline-block;
+	padding: 0.75rem 1.5rem;
+	background-color: #0066cc;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 1rem;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+	margin-top: 1rem;
+}
+
+.btn:hover {
+	background-color: #004499;
+	color: #fff;
+	text-decoration: none;
+}
+
+.btn-primary {
+	background-color: #0066cc;
+}
+
+.btn-primary:hover {
+	background-color: #004499;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+	background-color: #5a6268;
+}
+
+.btn-small {
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+}
+
+/* ========================================
+   HERO SECTION (HOME PAGE)
+   ======================================== */
+
+.hero-section {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 4rem 2rem;
+	text-align: center;
+	border-radius: 8px;
+	margin-bottom: 3rem;
+}
+
+.hero-content h1 {
+	font-size: 2.5rem;
+	margin-bottom: 1rem;
+	color: white;
+}
+
+.hero-content p {
+	font-size: 1.25rem;
+	margin-bottom: 2rem;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-section .btn {
+	background-color: white;
+	color: #667eea;
+	font-weight: bold;
+}
+
+.hero-section .btn:hover {
+	background-color: #f0f0f0;
+}
+
+/* ========================================
+   FEATURED BOOKS SECTION
+   ======================================== */
+
+.featured-books,
+.about-preview {
+	margin-bottom: 3rem;
+}
+
+.section-header {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.section-header h2 {
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+.section-header p {
+	color: #666;
+	font-size: 1.1rem;
+}
+
+/* ========================================
+   BOOK GRID & CARDS
+   ======================================== */
+
+.books-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 2rem;
+	margin-bottom: 2rem;
+}
+
+.book-card {
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.book-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-card-inner {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.book-card-image {
+	width: 100%;
+	height: 250px;
+	overflow: hidden;
+	background-color: #f0f0f0;
+}
+
+.book-card-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-card-image img {
+	transform: scale(1.05);
+}
+
+.book-card-content {
+	padding: 1.5rem;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.book-card-title {
+	margin: 0 0 0.5rem 0;
+	font-size: 1.25rem;
+}
+
+.book-card-title a {
+	color: #333;
+}
+
+.book-card-title a:hover {
+	color: #0066cc;
+}
+
+.book-authors {
+	color: #666;
+	font-size: 0.95rem;
+	margin-bottom: 0.75rem;
+}
+
+.book-authors a {
+	color: #0066cc;
+}
+
+.book-excerpt {
+	color: #666;
+	font-size: 0.9rem;
+	margin-bottom: 1rem;
+	flex: 1;
+}
+
+.book-genres {
+	margin-bottom: 1rem;
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.genre-badge {
+	display: inline-block;
+	background-color: #e9ecef;
+	color: #333;
+	padding: 0.25rem 0.75rem;
+	border-radius: 20px;
+	font-size: 0.8rem;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+}
+
+.genre-badge:hover {
+	background-color: #0066cc;
+	color: white;
+	text-decoration: none;
+}
+
+/* ========================================
+   POST STYLES
+   ======================================== */
+
+.post-preview {
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+	margin-bottom: 2rem;
+	display: flex;
+	transition: box-shadow 0.3s ease;
+}
+
+.post-preview:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-preview-inner {
+	display: flex;
+	width: 100%;
+}
+
+.post-image {
+	width: 200px;
+	min-width: 200px;
+	height: 200px;
+	overflow: hidden;
+	background-color: #f0f0f0;
+}
+
+.post-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.post-content {
+	padding: 1.5rem;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.entry-header {
+	margin-bottom: 1rem;
+}
+
+.entry-title {
+	margin: 0 0 0.5rem 0;
+	font-size: 1.5rem;
+}
+
+.entry-title a {
+	color: #333;
+}
+
+.entry-title a:hover {
+	color: #0066cc;
+}
+
+.entry-meta {
+	color: #666;
+	font-size: 0.9rem;
+	margin-bottom: 1rem;
+}
+
+.entry-meta span {
+	margin-right: 1.5rem;
+}
+
+.entry-meta a {
+	color: #0066cc;
+}
+
+.entry-excerpt {
+	color: #666;
+	margin-bottom: 1rem;
+	flex: 1;
+}
+
+/* ========================================
+   SINGLE POST/PAGE STYLES
+   ======================================== */
+
+.single-post-content,
+.single-book-content,
+.page-content {
+	background: white;
+	padding: 2rem;
+	border-radius: 8px;
+	border: 1px solid #ddd;
+}
+
+.entry-header {
+	border-bottom: 2px solid #0066cc;
+	padding-bottom: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.entry-image {
+	margin: 1rem 0 2rem 0;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.entry-image img {
+	width: 100%;
+	height: auto;
+}
+
+.entry-content {
+	line-height: 1.8;
+	color: #333;
+	margin-bottom: 2rem;
+}
+
+.entry-content p {
+	margin-bottom: 1.5rem;
+}
+
+.entry-tags {
+	background-color: #f8f9fa;
+	padding: 1rem;
+	border-radius: 4px;
+	margin-top: 2rem;
+}
+
+.tag-link {
+	display: inline-block;
+	background-color: #e9ecef;
+	color: #333;
+	padding: 0.5rem 1rem;
+	border-radius: 20px;
+	margin-right: 0.5rem;
+	margin-bottom: 0.5rem;
+	font-size: 0.9rem;
+	transition: background-color 0.3s ease;
+}
+
+.tag-link:hover {
+	background-color: #0066cc;
+	color: white;
+	text-decoration: none;
+}
+
+/* ========================================
+   BOOK META SECTION
+   ======================================== */
+
+.book-meta-section {
+	display: grid;
+	grid-template-columns: 250px 1fr;
+	gap: 3rem;
+	margin-bottom: 2rem;
+}
+
+.book-cover {
+	width: 100%;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-cover img {
+	width: 100%;
+	height: auto;
+}
+
+.book-info {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.book-authors,
+.book-genres,
+.book-format,
+.book-description {
+	padding: 1rem;
+	background-color: #f8f9fa;
+	border-radius: 4px;
+}
+
+.book-authors strong,
+.book-genres strong,
+.book-format strong,
+.book-description strong {
+	display: block;
+	margin-bottom: 0.5rem;
+	color: #333;
+}
+
+.book-authors a,
+.book-genres a {
+	display: inline-block;
+	margin-right: 0.75rem;
+	color: #0066cc;
+}
+
+.format-tag {
+	display: inline-block;
+	background-color: #0066cc;
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 20px;
+	font-size: 0.85rem;
+	margin-right: 0.5rem;
+}
+
+/* ========================================
+   PAGINATION STYLES
+   ======================================== */
+
+.pagination,
+.page-numbers {
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	margin: 3rem 0;
+	flex-wrap: wrap;
+}
+
+.page-numbers a,
+.page-numbers span {
+	display: inline-block;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	color: #0066cc;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+}
+
+.page-numbers a:hover {
+	background-color: #0066cc;
+	color: white;
+	border-color: #0066cc;
+	text-decoration: none;
+}
+
+.page-numbers .current {
+	background-color: #0066cc;
+	color: white;
+	border-color: #0066cc;
+}
+
+/* ========================================
+   NO POSTS FOUND & 404 STYLES
+   ======================================== */
+
+.no-posts-found {
+	text-align: center;
+	padding: 3rem 1rem;
+	background-color: #f8f9fa;
+	border-radius: 8px;
+}
+
+.no-posts-found h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+.error-404 .page-content {
+	text-align: center;
+}
+
+.error-404-actions {
+	margin: 2rem 0;
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.recent-items {
+	background-color: #f8f9fa;
+	padding: 2rem;
+	border-radius: 8px;
+	margin-top: 2rem;
+	text-align: left;
+}
+
+.recent-items h3 {
+	margin-bottom: 1rem;
+}
+
+.recent-items ul {
+	list-style: none;
+}
+
+.recent-items li {
+	padding: 0.5rem 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.recent-items li:last-child {
+	border-bottom: none;
+}
+
+.recent-items a {
+	color: #0066cc;
+}
+
+/* ========================================
+   RELATED SECTION STYLES
+   ======================================== */
+
+.related-books,
+.related-posts {
+	margin-top: 3rem;
+	padding-top: 2rem;
+	border-top: 2px solid #ddd;
+}
+
+.related-books h3,
+.related-posts h3 {
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+}
+
+.posts-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.related-post-item {
+	padding: 1rem;
+	background-color: #f8f9fa;
+	border-left: 4px solid #0066cc;
+	border-radius: 4px;
+	transition: background-color 0.3s ease;
+}
+
+.related-post-item:hover {
+	background-color: #f0f0f0;
+}
+
+.related-post-item h4 {
+	margin: 0 0 0.5rem 0;
+	font-size: 1rem;
+}
+
+.post-date {
+	color: #999;
+	font-size: 0.85rem;
+}
+
+/* ========================================
+   SEARCH FORM STYLES
+   ======================================== */
+
+.search-form {
+	margin: 2rem 0;
+	display: flex;
+	gap: 0.5rem;
+}
+
+.search-form label {
+	flex: 1;
+}
+
+.search-form input[type="search"] {
+	width: 100%;
+	padding: 0.75rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 1rem;
+}
+
+.search-form input[type="submit"] {
+	padding: 0.75rem 1.5rem;
+	background-color: #0066cc;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.search-form input[type="submit"]:hover {
+	background-color: #004499;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+	.site-main {
+		padding: 1rem;
+	}
+
+	.menu-toggle {
+		display: block;
+	}
+
+	.site-navigation {
+		display: none;
+	}
+
+	.site-navigation.active {
+		display: block;
+		width: 100%;
+	}
+
+	.site-navigation ul {
+		flex-direction: column;
+	}
+
+	.site-navigation a {
+		padding: 1rem;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.page-title {
+		font-size: 2rem;
+	}
+
+	.hero-content h1 {
+		font-size: 1.75rem;
+	}
+
+	.hero-content p {
+		font-size: 1rem;
+	}
+
+	.books-grid {
+		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+		gap: 1rem;
+	}
+
+	.book-card-image {
+		height: 200px;
+	}
+
+	.book-meta-section {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.post-preview-inner {
+		flex-direction: column;
+	}
+
+	.post-image {
+		width: 100%;
+		height: 200px;
+	}
+
+	.footer-widgets {
+		grid-template-columns: 1fr;
+	}
+
+	.error-404-actions {
+		flex-direction: column;
+	}
+
+	.error-404-actions .btn {
+		width: 100%;
+		text-align: center;
+	}
+
+	.search-form {
+		flex-direction: column;
+	}
+}
+
+@media (max-width: 480px) {
+	html {
+		font-size: 14px;
+	}
+
+	.site-title {
+		font-size: 1.25rem;
+	}
+
+	.page-title {
+		font-size: 1.5rem;
+	}
+
+	.books-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.btn {
+		width: 100%;
+		text-align: center;
+		padding: 1rem;
+	}
+}
+
+/* ========================================
+   ABOUT & CONTACT PAGE STYLES
+   ======================================== */
+
+.page-about,
+.page-contact {
+	max-width: 900px;
+}
+
+.page-image {
+	margin: 2rem 0;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-content {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 2rem;
+}
+
+.contact-sidebar {
+	background-color: #f8f9fa;
+	padding: 1.5rem;
+	border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+	.contact-content {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.skip-link {
+	position: absolute;
+	left: -9999px;
+	z-index: -999;
+}
+
+.skip-link:focus {
+	left: 6px;
+	top: 7px;
+	z-index: 999;
+	padding: 8px;
+	text-decoration: underline;
+	background-color: #f1f1f1;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}

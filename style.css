@@ -1,0 +1,18 @@
+/*
+Theme Name: Bookstore Theme
+Theme URI: https://example.com/bookstore-theme
+Author: Your Name
+Author URI: https://example.com
+Description: A custom WordPress theme built for a bookstore website with custom post types, taxonomies, and advanced theme features.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bookstore-theme
+Domain Path: /languages
+Tags: custom, bookstore, books, responsive, one-column, flexible-header
+
+This theme is designed for displaying and selling books with custom post types,
+advanced filtering by genre and author, and a responsive design.
+*/
+
+/* This file is for theme information only. All CSS is loaded from assets/css/style.css */
