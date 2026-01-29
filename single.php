@@ -98,6 +98,15 @@ get_header();
 			</article>
 
 			<?php
+			// Display edit link
+			edit_post_link(
+				esc_html__( 'Edit Post', 'bookstore-theme' ),
+				'<p class="edit-link">',
+				'</p>'
+			);
+			?>
+
+			<?php
 			// Display comments
 			if ( comments_open() || get_comments_number() ) {
 				comments_template();

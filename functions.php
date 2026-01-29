@@ -12,6 +12,113 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Create Sample Books (Direct PHP Function)
+ * 
+ * Call this in the browser console: bookstoreCreateSampleBooks()
+ * Or access it via: /wp-admin/admin-ajax.php?action=create_sample_books
+ *
+ * @return void
+ */
+function bookstore_create_sample_books_direct() {
+	$books = array(
+		array(
+			'title'   => 'The Midnight Library',
+			'excerpt' => 'A dazzling novel about a woman who gets the chance to explore all the different lives she could have lived.',
+			'author'  => 'Matt Haig',
+			'genres'  => array( 'Fiction', 'Fantasy' ),
+		),
+		array(
+			'title'   => 'Project Hail Mary',
+			'excerpt' => 'A lone astronaut must save Earth from extinction in this thrilling science fiction adventure.',
+			'author'  => 'Andy Weir',
+			'genres'  => array( 'Science Fiction', 'Adventure' ),
+		),
+		array(
+			'title'   => 'The Silent Patient',
+			'excerpt' => 'A psychological thriller about a woman found covered in blood with a gun in her hand.',
+			'author'  => 'Alex Michaelides',
+			'genres'  => array( 'Thriller', 'Mystery' ),
+		),
+		array(
+			'title'   => 'Educated',
+			'excerpt' => 'A memoir about a young woman who leaves her survivalist family to pursue education.',
+			'author'  => 'Tara Westover',
+			'genres'  => array( 'Memoir', 'Biography' ),
+		),
+		array(
+			'title'   => 'Lessons in Chemistry',
+			'excerpt' => 'A woman scientist fights for her place in a male-dominated 1960s world.',
+			'author'  => 'Bonnie Garmus',
+			'genres'  => array( 'Historical Fiction', 'Women\'s Fiction' ),
+		),
+		array(
+			'title'   => 'The Thursday Murder Club',
+			'excerpt' => 'Four unlikely friends meet weekly to investigate unsolved killings in this charming mystery.',
+			'author'  => 'Richard Osman',
+			'genres'  => array( 'Mystery', 'Comedy' ),
+		),
+	);
+
+	$created = 0;
+	foreach ( $books as $book_data ) {
+		// Create the book post
+		$book_id = wp_insert_post( array(
+			'post_type'    => 'book',
+			'post_title'   => $book_data['title'],
+			'post_excerpt' => $book_data['excerpt'],
+			'post_content' => $book_data['excerpt'],
+			'post_status'  => 'publish',
+		) );
+
+		if ( ! is_wp_error( $book_id ) && $book_id ) {
+			// Add author
+			if ( ! empty( $book_data['author'] ) ) {
+				$author_term = term_exists( $book_data['author'], 'author' );
+				if ( ! $author_term ) {
+					$author_term = wp_insert_term( $book_data['author'], 'author' );
+				}
+				if ( ! is_wp_error( $author_term ) ) {
+					wp_set_post_terms( $book_id, $author_term['term_id'], 'author' );
+				}
+			}
+
+			// Add genres
+			if ( ! empty( $book_data['genres'] ) ) {
+				$genre_ids = array();
+				foreach ( $book_data['genres'] as $genre ) {
+					$genre_term = term_exists( $genre, 'genre' );
+					if ( ! $genre_term ) {
+						$genre_term = wp_insert_term( $genre, 'genre' );
+					}
+					if ( ! is_wp_error( $genre_term ) ) {
+						$genre_ids[] = $genre_term['term_id'];
+					}
+				}
+				if ( ! empty( $genre_ids ) ) {
+					wp_set_post_terms( $book_id, $genre_ids, 'genre' );
+				}
+			}
+
+			$created++;
+		}
+	}
+
+	return $created;
+}
+
+// AJAX endpoint
+add_action( 'wp_ajax_create_sample_books', function() {
+	$count = bookstore_create_sample_books_direct();
+	wp_send_json_success( array( 'created' => $count ) );
+} );
+
+// Also make it non-privileged
+add_action( 'wp_ajax_nopriv_create_sample_books', function() {
+	$count = bookstore_create_sample_books_direct();
+	wp_send_json_success( array( 'created' => $count ) );
+} );
+
+/**
  * Theme Setup
  *
  * Sets up theme defaults and registers support for various WordPress features.
@@ -270,6 +377,95 @@ function bookstore_theme_register_book_post_type() {
 add_action( 'init', 'bookstore_theme_register_book_post_type' );
 
 /**
+ * Register Additional Custom Post Types
+ *
+ * Registers Review, Author, and Event post types.
+ *
+ * @return void
+ */
+function bookstore_theme_register_additional_post_types() {
+	// Review Post Type
+	$review_labels = array(
+		'name'                  => esc_html_x( 'Reviews', 'Post Type General Name', 'bookstore-theme' ),
+		'singular_name'         => esc_html_x( 'Review', 'Post Type Singular Name', 'bookstore-theme' ),
+		'menu_name'             => esc_html__( 'Reviews', 'bookstore-theme' ),
+		'all_items'             => esc_html__( 'All Reviews', 'bookstore-theme' ),
+		'add_new_item'          => esc_html__( 'Add New Review', 'bookstore-theme' ),
+		'edit_item'             => esc_html__( 'Edit Review', 'bookstore-theme' ),
+	);
+
+	$review_args = array(
+		'label'               => esc_html__( 'Review', 'bookstore-theme' ),
+		'description'         => esc_html__( 'Book reviews and ratings', 'bookstore-theme' ),
+		'labels'              => $review_labels,
+		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'comments' ),
+		'public'              => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'menu_position'       => 6,
+		'menu_icon'           => 'dashicons-format-quote',
+		'has_archive'         => true,
+		'rewrite'             => array( 'slug' => 'reviews' ),
+	);
+
+	register_post_type( 'review', $review_args );
+
+	// Author Profile Post Type
+	$author_profile_labels = array(
+		'name'                  => esc_html_x( 'Author Profiles', 'Post Type General Name', 'bookstore-theme' ),
+		'singular_name'         => esc_html_x( 'Author Profile', 'Post Type Singular Name', 'bookstore-theme' ),
+		'menu_name'             => esc_html__( 'Author Profiles', 'bookstore-theme' ),
+		'all_items'             => esc_html__( 'All Authors', 'bookstore-theme' ),
+		'add_new_item'          => esc_html__( 'Add Author Profile', 'bookstore-theme' ),
+		'edit_item'             => esc_html__( 'Edit Author Profile', 'bookstore-theme' ),
+	);
+
+	$author_profile_args = array(
+		'label'               => esc_html__( 'Author Profile', 'bookstore-theme' ),
+		'description'         => esc_html__( 'Author profile pages', 'bookstore-theme' ),
+		'labels'              => $author_profile_labels,
+		'supports'            => array( 'title', 'editor', 'thumbnail', 'comments' ),
+		'public'              => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'menu_position'       => 7,
+		'menu_icon'           => 'dashicons-businessman',
+		'has_archive'         => true,
+		'rewrite'             => array( 'slug' => 'authors' ),
+	);
+
+	register_post_type( 'author-profile', $author_profile_args );
+
+	// Event Post Type
+	$event_labels = array(
+		'name'                  => esc_html_x( 'Events', 'Post Type General Name', 'bookstore-theme' ),
+		'singular_name'         => esc_html_x( 'Event', 'Post Type Singular Name', 'bookstore-theme' ),
+		'menu_name'             => esc_html__( 'Events', 'bookstore-theme' ),
+		'all_items'             => esc_html__( 'All Events', 'bookstore-theme' ),
+		'add_new_item'          => esc_html__( 'Add New Event', 'bookstore-theme' ),
+		'edit_item'             => esc_html__( 'Edit Event', 'bookstore-theme' ),
+	);
+
+	$event_args = array(
+		'label'               => esc_html__( 'Event', 'bookstore-theme' ),
+		'description'         => esc_html__( 'Book signing events and readings', 'bookstore-theme' ),
+		'labels'              => $event_labels,
+		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
+		'public'              => true,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'menu_position'       => 8,
+		'menu_icon'           => 'dashicons-calendar',
+		'has_archive'         => true,
+		'rewrite'             => array( 'slug' => 'events' ),
+	);
+
+	register_post_type( 'event', $event_args );
+}
+
+add_action( 'init', 'bookstore_theme_register_additional_post_types' );
+
+/**
  * Register Custom Taxonomies for Books
  *
  * Creates genre, author, and format taxonomies for the book post type.
@@ -386,3 +582,177 @@ function bookstore_theme_register_book_taxonomies() {
 }
 
 add_action( 'init', 'bookstore_theme_register_book_taxonomies', 0 );
+
+/**
+ * AJAX Handler to Add Books
+ */
+function bookstore_add_book_handler() {
+	// Verify nonce but don't die - return error instead
+	$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( $_POST['nonce'] ) : '';
+	
+	if ( ! wp_verify_nonce( $nonce, 'bookstore_nonce' ) ) {
+		wp_send_json_error( array( 'message' => 'Security check failed' ) );
+		return;
+	}
+
+	$title = sanitize_text_field( $_POST['title'] ?? '' );
+	$excerpt = sanitize_textarea_field( $_POST['excerpt'] ?? '' );
+	$author = sanitize_text_field( $_POST['author'] ?? '' );
+	$genres = isset( $_POST['genres'] ) ? json_decode( stripslashes( $_POST['genres'] ), true ) : array();
+
+	if ( empty( $title ) ) {
+		wp_send_json_error( array( 'message' => 'Title is required' ) );
+		return;
+	}
+
+	// Create book post
+	$book_id = wp_insert_post( array(
+		'post_type'    => 'book',
+		'post_title'   => $title,
+		'post_excerpt' => $excerpt,
+		'post_status'  => 'publish',
+		'post_content' => $excerpt,
+	) );
+
+	if ( is_wp_error( $book_id ) ) {
+		wp_send_json_error( array( 'message' => 'Failed to create book' ) );
+		return;
+	}
+
+	// Add author term if provided
+	if ( ! empty( $author ) ) {
+		$author_term = term_exists( $author, 'author' );
+		if ( $author_term === 0 || $author_term === null ) {
+			$author_term = wp_insert_term( $author, 'author' );
+		}
+		if ( ! is_wp_error( $author_term ) ) {
+			wp_set_post_terms( $book_id, $author_term['term_id'], 'author', false );
+		}
+	}
+
+	// Add genre terms if provided
+	if ( ! empty( $genres ) && is_array( $genres ) ) {
+		$genre_ids = array();
+		foreach ( $genres as $genre ) {
+			$genre_term = term_exists( $genre, 'genre' );
+			if ( $genre_term === 0 || $genre_term === null ) {
+				$genre_term = wp_insert_term( $genre, 'genre' );
+			}
+			if ( ! is_wp_error( $genre_term ) ) {
+				$genre_ids[] = $genre_term['term_id'];
+			}
+		}
+		if ( ! empty( $genre_ids ) ) {
+			wp_set_post_terms( $book_id, $genre_ids, 'genre', false );
+		}
+	}
+
+	wp_send_json_success( array(
+		'message' => 'Book added successfully',
+		'book_id' => $book_id,
+	) );
+}
+
+add_action( 'wp_ajax_bookstore_add_book', 'bookstore_add_book_handler' );
+add_action( 'wp_ajax_nopriv_bookstore_add_book', 'bookstore_add_book_handler' );
+
+/**
+ * Register Customizer Controls for Book Covers
+ *
+ * Allows admins to customize book cover images and theme settings.
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer object.
+ * @return void
+ */
+function bookstore_theme_customize_register( $wp_customize ) {
+	// Add a section for book covers
+	$wp_customize->add_section( 'bookstore_book_covers', array(
+		'title'       => esc_html__( 'Book Covers', 'bookstore-theme' ),
+		'description' => esc_html__( 'Customize book cover images and styles', 'bookstore-theme' ),
+		'priority'    => 160,
+	) );
+
+	// Add controls for book cover styling
+	$wp_customize->add_setting( 'bookstore_cover_blur_amount', array(
+		'default'           => '12',
+		'sanitize_callback' => 'absint',
+	) );
+
+	$wp_customize->add_control( 'bookstore_cover_blur_amount', array(
+		'label'       => esc_html__( 'Cover Blur Amount (px)', 'bookstore-theme' ),
+		'description' => esc_html__( 'Blur amount before image loads (0-20)', 'bookstore-theme' ),
+		'section'     => 'bookstore_book_covers',
+		'type'        => 'number',
+		'input_attrs' => array(
+			'min'  => 0,
+			'max'  => 20,
+			'step' => 1,
+		),
+	) );
+
+	$wp_customize->add_setting( 'bookstore_cover_transition_speed', array(
+		'default'           => '600',
+		'sanitize_callback' => 'absint',
+	) );
+
+	$wp_customize->add_control( 'bookstore_cover_transition_speed', array(
+		'label'       => esc_html__( 'Blur-to-Clear Speed (ms)', 'bookstore-theme' ),
+		'description' => esc_html__( 'Animation duration in milliseconds', 'bookstore-theme' ),
+		'section'     => 'bookstore_book_covers',
+		'type'        => 'number',
+		'input_attrs' => array(
+			'min'  => 100,
+			'max'  => 2000,
+			'step' => 100,
+		),
+	) );
+
+	// Add section for gallery
+	$wp_customize->add_section( 'bookstore_gallery', array(
+		'title'       => esc_html__( 'Book Cover Gallery', 'bookstore-theme' ),
+		'description' => esc_html__( 'View and manage book cover images', 'bookstore-theme' ),
+		'priority'    => 161,
+	) );
+
+	$wp_customize->add_setting( 'bookstore_gallery_info', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( new WP_Customize_Control( 
+		$wp_customize,
+		'bookstore_gallery_info',
+		array(
+			'label'       => esc_html__( 'Covers Location', 'bookstore-theme' ),
+			'description' => esc_html__( 'Book covers are stored in: /wp-content/themes/personalproject-wp/assets/images/', 'bookstore-theme' ),
+			'section'     => 'bookstore_gallery',
+			'type'        => 'hidden',
+		)
+	) );
+}
+
+add_action( 'customize_register', 'bookstore_theme_customize_register' );
+
+/**
+ * Output Customizer Settings as CSS
+ *
+ * Applies customizer values to the theme dynamically.
+ *
+ * @return void
+ */
+function bookstore_theme_customize_css() {
+	$blur_amount = get_theme_mod( 'bookstore_cover_blur_amount', 12 );
+	$transition_speed = get_theme_mod( 'bookstore_cover_transition_speed', 600 );
+
+	$css = '
+	.book-card-image {
+		transition: filter ' . intval( $transition_speed ) . 'ms ease, opacity 400ms ease;
+		filter: blur(' . intval( $blur_amount ) . 'px);
+	}
+	';
+
+	wp_add_inline_style( 'bookstore-style', $css );
+}
+
+add_action( 'wp_enqueue_scripts', 'bookstore_theme_customize_css' );
+

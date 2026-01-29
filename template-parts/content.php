@@ -67,6 +67,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<a href="<?php echo esc_url( get_permalink() ); ?>" class="btn btn-small">
 				<?php esc_html_e( 'Read More', 'bookstore-theme' ); ?>
 			</a>
+
+			<?php
+			// Display edit link for logged-in users
+			edit_post_link(
+				esc_html__( 'Edit', 'bookstore-theme' ),
+				'<span class="edit-link">',
+				'</span>'
+			);
+			?>
 		</div>
 	</div>
 </article>

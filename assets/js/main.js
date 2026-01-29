@@ -158,6 +158,36 @@
 	}
 
 	/**
+	 * Initialize book cover backgrounds: load image, set as div background and animate blur -> clear
+	 */
+	function initBookCoverBackgrounds() {
+		// Handle both .book-card-image (archives) and .book-cover (single pages)
+		const coverDivs = document.querySelectorAll('.book-card-image[data-bg], .book-cover[data-bg]');
+		coverDivs.forEach(function(div) {
+			const src = div.getAttribute('data-bg');
+			if ( ! src ) return;
+
+			// Prevent double-loading
+			if ( div.classList.contains('bg-initialized') ) return;
+			div.classList.add('bg-initialized');
+
+			// Preload image
+			const img = new Image();
+			img.src = src;
+			img.onload = function() {
+				// Set background image and mark as loaded to trigger CSS transition
+				div.style.backgroundImage = 'url("' + src + '")';
+				div.classList.add('bg-loaded');
+			};
+			img.onerror = function() {
+				// fallback: still try to set background
+				div.style.backgroundImage = 'url("' + src + '")';
+				div.classList.add('bg-loaded');
+			};
+		});
+	}
+
+	/**
 	 * Lightbox for featured images (optional)
 	 */
 	function initLightbox() {
@@ -192,6 +222,34 @@
 	}
 
 	/**
+	 * Add Sample Books via AJAX
+	 */
+	function addSampleBooks() {
+		const formData = new FormData();
+		formData.append('action', 'create_sample_books');
+
+		console.log('📚 Creating sample books...');
+
+		fetch(bookstoreTheme.ajaxurl, {
+			method: 'POST',
+			body: formData
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.success) {
+				console.log('✓ Created ' + data.data.created + ' books!');
+				// Reload the page to see the new books
+				setTimeout(() => {
+					window.location.reload();
+				}, 500);
+			} else {
+				console.log('✗ Error creating books:', data);
+			}
+		})
+		.catch(error => console.error('Error:', error));
+	}
+
+	/**
 	 * Initialize when DOM is ready
 	 */
 	document.addEventListener('DOMContentLoaded', function() {
@@ -200,9 +258,13 @@
 		initSmoothScroll();
 		initBookFilters();
 		initLightbox();
+		initBookCoverBackgrounds();
 
 		console.log('Bookstore Theme: Scripts initialized');
 	});
+
+	// Export addSampleBooks to window for console access
+	window.addSampleBooks = addSampleBooks;
 })();
 
 /* ========================================
