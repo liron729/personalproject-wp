@@ -222,6 +222,48 @@
 	}
 
 	/**
+	 * Font loader: injects Google Fonts stylesheet and preconnects, adds `fonts-loaded` class on success
+	 */
+	function initFontLoading() {
+		// Preconnect for faster font loading
+		try {
+			var p1 = document.createElement('link');
+			p1.rel = 'preconnect';
+			p1.href = 'https://fonts.gstatic.com';
+			p1.crossOrigin = 'anonymous';
+			document.head.appendChild(p1);
+
+			var p2 = document.createElement('link');
+			p2.rel = 'preconnect';
+			p2.href = 'https://fonts.googleapis.com';
+			document.head.appendChild(p2);
+
+			var link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap';
+			link.onload = function() {
+				document.documentElement.classList.add('fonts-loaded');
+				console.log('Fonts loaded (via JS)');
+			};
+			link.onerror = function() {
+				document.documentElement.classList.add('fonts-failed');
+				console.warn('Font stylesheet failed to load');
+			};
+			document.head.appendChild(link);
+
+			// Safety fallback: if stylesheet doesn't fire onload within 3000ms, mark as loaded to avoid blocking
+			setTimeout(function() {
+				if (!document.documentElement.classList.contains('fonts-loaded') && !document.documentElement.classList.contains('fonts-failed')) {
+					document.documentElement.classList.add('fonts-loaded');
+					console.warn('Fonts load timeout — continuing with fallback');
+				}
+			}, 3000);
+		} catch (e) {
+			console.warn('Font loader error', e);
+		}
+	}
+
+	/**
 	 * Add Sample Books via AJAX
 	 */
 	function addSampleBooks() {
@@ -253,6 +295,7 @@
 	 * Initialize when DOM is ready
 	 */
 	document.addEventListener('DOMContentLoaded', function() {
+		initFontLoading();
 		initMobileMenu();
 		initLoadMoreBooks();
 		initSmoothScroll();
