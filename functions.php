@@ -184,11 +184,238 @@ function bookstore_theme_setup() {
 		'footer-menu'  => esc_html__( 'Footer Menu', 'bookstore-theme' ),
 	) );
 
+	/**
+	 * Default Primary Menu Fallback
+	 *
+	 * Outputs a useful default menu when no menu is assigned to the Primary Menu location.
+	 * This intentionally lists the most common pages (Home, Books, Blog, About, Contact)
+	 * and avoids listing the default "Sample Page" that comes with a fresh WP install.
+	 */
+	function bookstore_default_primary_menu() {
+		echo '<ul id="primary-menu" class="menu">';
+		// Home
+		echo '<li class="menu-item"><a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( 'Home', 'bookstore-theme' ) . '</a></li>';
+
+		// Books archive (custom post type)
+		$books_link = get_post_type_archive_link( 'book' );
+		if ( $books_link ) {
+			echo '<li class="menu-item"><a href="' . esc_url( $books_link ) . '">' . esc_html__( 'Books', 'bookstore-theme' ) . '</a></li>';
+		}
+
+		// Blogs link: prefer page using 'blogs.php' template, then page_for_posts, then common slugs/titles, then fallback to /blog/
+		$blogs_link = '';
+
+		// 1) Page with template 'blogs.php'
+		$blogs_page = get_posts( array(
+			'post_type'   => 'page',
+			'meta_key'    => '_wp_page_template',
+			'meta_value'  => 'blogs.php',
+			'numberposts' => 1,
+		) );
+
+		if ( ! empty( $blogs_page ) ) {
+			$blogs_link = get_permalink( $blogs_page[0]->ID );
+		}
+
+		// 2) Posts page
+		if ( empty( $blogs_link ) ) {
+			$page_for_posts = get_option( 'page_for_posts' );
+			if ( $page_for_posts ) {
+				$blogs_link = get_permalink( $page_for_posts );
+			}
+		}
+
+		// 3) Common slugs: blog / blogs
+		if ( empty( $blogs_link ) ) {
+			$slug_page = get_page_by_path( 'blog' );
+			if ( ! $slug_page ) {
+				$slug_page = get_page_by_path( 'blogs' );
+			}
+			if ( $slug_page ) {
+				$blogs_link = get_permalink( $slug_page->ID );
+			}
+		}
+
+		// 4) Common titles: Blog / Blogs
+		if ( empty( $blogs_link ) ) {
+			$title_page = get_page_by_title( 'Blog' );
+			if ( ! $title_page ) {
+				$title_page = get_page_by_title( 'Blogs' );
+			}
+			if ( $title_page ) {
+				$blogs_link = get_permalink( $title_page->ID );
+			}
+		}
+
+		// 5) Fallback to /blog/
+		if ( empty( $blogs_link ) ) {
+			$blogs_link = home_url( '/blog/' );
+		}
+
+		echo '<li class="menu-item"><a href="' . esc_url( $blogs_link ) . '">' . esc_html__( 'Blog', 'bookstore-theme' ) . '</a></li>';
+
+		// About page
+		$about = get_page_by_path( 'about' );
+		if ( $about ) {
+			echo '<li class="menu-item"><a href="' . esc_url( get_permalink( $about ) ) . '">' . esc_html__( 'About', 'bookstore-theme' ) . '</a></li>';
+		}
+
+		// Contact page
+		$contact = get_page_by_path( 'contact' );
+		if ( $contact ) {
+			echo '<li class="menu-item"><a href="' . esc_url( get_permalink( $contact ) ) . '">' . esc_html__( 'Contact', 'bookstore-theme' ) . '</a></li>';
+		}
+
+		// 404 test page: prefer page with template '404.php', then slug '404', then fallback
+		$notfound_link = '';
+		$nf_page = get_posts( array(
+			'post_type'   => 'page',
+			'meta_key'    => '_wp_page_template',
+			'meta_value'  => '404.php',
+			'numberposts' => 1,
+			'post_status' => 'any',
+		) );
+
+		if ( ! empty( $nf_page ) ) {
+			$notfound_link = get_permalink( $nf_page[0]->ID );
+		}
+
+		if ( empty( $notfound_link ) ) {
+			$slug_404 = get_page_by_path( '404' );
+			if ( $slug_404 ) {
+				$notfound_link = get_permalink( $slug_404->ID );
+			}
+		}
+
+		if ( empty( $notfound_link ) ) {
+			$notfound_link = home_url( '/404' );
+		}
+
+		echo '<li class="menu-item"><a href="' . esc_url( $notfound_link ) . '">' . esc_html__( '404', 'bookstore-theme' ) . '</a></li>';
+
+		echo '</ul>';
+	}
+
 	// Load text domain for translations
 	load_theme_textdomain( 'bookstore-theme', get_template_directory() . '/languages' );
 }
 
 add_action( 'after_setup_theme', 'bookstore_theme_setup' );
+
+/**
+ * Ensure a Blogs page exists (admin helper)
+ *
+ * Creates a published page using the `blogs.php` template if no suitable page exists.
+ * Runs on admin_init once and stores a flag in options to avoid repeating.
+ */
+function bookstore_ensure_blogs_page() {
+	// Only run in admin and only once
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	if ( get_option( 'bookstore_blogs_page_created' ) ) {
+		return;
+	}
+
+	// 1) Check for a page already using the blogs.php template
+	$pages = get_posts( array(
+		'post_type'   => 'page',
+		'meta_key'    => '_wp_page_template',
+		'meta_value'  => 'blogs.php',
+		'numberposts' => 1,
+		'post_status' => 'any',
+	) );
+
+	if ( ! empty( $pages ) ) {
+		update_option( 'bookstore_blogs_page_created', 1 );
+		update_option( 'bookstore_blogs_page_id', $pages[0]->ID );
+		return;
+	}
+
+	// 2) Check for common slugs
+	$slug_page = get_page_by_path( 'blog' ) ?: get_page_by_path( 'blogs' );
+	if ( $slug_page ) {
+		update_option( 'bookstore_blogs_page_created', 1 );
+		update_option( 'bookstore_blogs_page_id', $slug_page->ID );
+		return;
+	}
+
+	// 3) Create the page
+	$new_page = array(
+		'post_title'   => wp_strip_all_tags( 'Blog' ),
+		'post_content' => '',
+		'post_status'  => 'publish',
+		'post_type'    => 'page',
+		'post_name'    => 'blog',
+	);
+
+	$page_id = wp_insert_post( $new_page );
+	if ( $page_id && ! is_wp_error( $page_id ) ) {
+		update_post_meta( $page_id, '_wp_page_template', 'blogs.php' );
+		update_option( 'bookstore_blogs_page_created', 1 );
+		update_option( 'bookstore_blogs_page_id', $page_id );
+	}
+}
+
+add_action( 'admin_init', 'bookstore_ensure_blogs_page' );
+
+/**
+ * Ensure a 404 test page exists (admin helper)
+ *
+ * Creates a published page using the `404.php` template so the navbar can link to it.
+ */
+function bookstore_ensure_404_page() {
+	// Only run in admin and only once
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	if ( get_option( 'bookstore_404_page_created' ) ) {
+		return;
+	}
+
+	// 1) Check for a page already using the 404.php template
+	$pages = get_posts( array(
+		'post_type'   => 'page',
+		'meta_key'    => '_wp_page_template',
+		'meta_value'  => '404.php',
+		'numberposts' => 1,
+		'post_status' => 'any',
+	) );
+
+	if ( ! empty( $pages ) ) {
+		update_option( 'bookstore_404_page_created', 1 );
+		update_option( 'bookstore_404_page_id', $pages[0]->ID );
+		return;
+	}
+
+	// 2) Check for slug '404'
+	$slug_page = get_page_by_path( '404' );
+	if ( $slug_page ) {
+		update_option( 'bookstore_404_page_created', 1 );
+		update_option( 'bookstore_404_page_id', $slug_page->ID );
+		return;
+	}
+
+	// 3) Create the page
+	$new_page = array(
+		'post_title'   => wp_strip_all_tags( '404' ),
+		'post_content' => '',
+		'post_status'  => 'publish',
+		'post_type'    => 'page',
+		'post_name'    => '404',
+	);
+
+	$page_id = wp_insert_post( $new_page );
+	if ( $page_id && ! is_wp_error( $page_id ) ) {
+		update_post_meta( $page_id, '_wp_page_template', '404.php' );
+		update_option( 'bookstore_404_page_created', 1 );
+		update_option( 'bookstore_404_page_id', $page_id );
+	}
+}
+
+add_action( 'admin_init', 'bookstore_ensure_404_page' );
 
 /**
  * Enqueue Styles and Scripts

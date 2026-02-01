@@ -75,7 +75,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						'theme_location' => 'primary-menu',
 						'menu_id'        => 'primary-menu',
 						'container'      => false,
-						'fallback_cb'    => 'wp_page_menu',
+					'fallback_cb'    => 'bookstore_default_primary_menu',
 						'depth'          => 2,
 					) );
 					?>
