@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<!-- Footer Credits -->
 					<div class="site-info">
-						<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a></p>
+						<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html__( 'Bookstore', 'bookstore-theme' ); ?></a></p>
 						<p><?php esc_html_e( 'Powered by WordPress', 'bookstore-theme' ); ?> &amp; <strong><?php esc_html_e( 'Bookstore Theme', 'bookstore-theme' ); ?></strong></p>
 					</div>
 				</div>

@@ -292,6 +292,57 @@
 	}
 
 	/**
+	 * AJAX comment form submit (fallback)
+	 *
+	 * Submits the comment form via fetch to /wp-comments-post.php and reloads
+	 * the page on success. This improves reliability when the native submit
+	 * is blocked by third-party JS or markup issues.
+	 */
+	function initCommentFormAjax() {
+		const forms = document.querySelectorAll('form.comment-form, form#commentform');
+		if ( ! forms.length ) {
+			return;
+		}
+
+		forms.forEach(function(form) {
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				const submitBtn = form.querySelector('input[type="submit"], button[type="submit"]');
+				if ( submitBtn ) {
+					submitBtn.disabled = true;
+					submitBtn.dataset.origText = submitBtn.textContent;
+						submitBtn.textContent = 'Posting...';
+
+					}
+
+					const data = new FormData(form);
+					const postUrl = (typeof bookstoreTheme !== 'undefined' && bookstoreTheme.siteUrl) ? bookstoreTheme.siteUrl + '/wp-comments-post.php' : '/wp-comments-post.php';
+
+					fetch(postUrl, {
+						method: 'POST',
+						body: data,
+						credentials: 'same-origin'
+					}).then(function(response){
+						if (response.ok) {
+							window.location.reload();
+						} else {
+							return response.text().then(function(){ throw new Error('Comment submission failed'); });
+						}
+					}).catch(function(err){
+						console.error('Comment submit error:', err);
+						if (submitBtn) {
+							submitBtn.disabled = false;
+							submitBtn.textContent = submitBtn.dataset.origText || 'Post Comment';
+						}
+						// Fallback: try native submit
+						try { form.submit(); } catch (e) { /* ignore */ }
+					});
+				});
+			});
+	}
+
+	/**
 	 * Initialize when DOM is ready
 	 */
 	document.addEventListener('DOMContentLoaded', function() {
@@ -302,12 +353,14 @@
 		initBookFilters();
 		initLightbox();
 		initBookCoverBackgrounds();
+		initCommentFormAjax();
 
 		console.log('Bookstore Theme: Scripts initialized');
 	});
 
 	// Export addSampleBooks to window for console access
 	window.addSampleBooks = addSampleBooks;
+
 })();
 
 /* ========================================

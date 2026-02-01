@@ -11,6 +11,30 @@
    RESET & BASE STYLES
    ======================================== */
 
+/* ========= THEME PALETTE VARIABLES =========
+   Default variables and a `.home` override are provided so the
+   homepage can use a forest-green palette while the rest of the
+   site keeps readable contrast. Adjust these colors as desired. */
+:root {
+	--color-bg: #f5efe0; /* warm beige background */
+	--color-text: #072b1f; /* dark forest */
+	--color-accent: #2e8b57; /* medium green */
+	--color-accent-2: #0b3d2e; /* deep forest */
+	--accent-gradient: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-2) 100%);
+	--transition: 200ms ease;
+	--shadow: 0 8px 24px rgba(11,61,46,0.12);
+}
+
+/* Homepage-specific overrides to make the front page distinctly forest-green */
+.home {
+	--color-bg: #f5efe0; /* warm beige background */
+	--color-text: #052814;
+	--color-accent: #2e8b57;
+	--color-accent-2: #0b3d2e;
+	--accent-gradient: linear-gradient(90deg, #2e8b57 0%, #0b3d2e 100%);
+}
+
+
 * {
 	margin: 0;
 	padding: 0;
@@ -102,6 +126,33 @@ img {
 	background-color: #f8f9fa;
 	border-bottom: 1px solid #ddd;
 	padding: 1rem 0;
+}
+
+/* Homepage header/nav overrides for better contrast on green background */
+.home .site-header {
+	background-color: var(--color-accent-2);
+	border-bottom: none;
+	color: #fff;
+}
+.home .site-header .site-title a {
+	color: #fff;
+}
+.home .site-description {
+	color: rgba(255,255,255,0.85);
+}
+.home .site-navigation a {
+	color: rgba(255,255,255,0.95);
+}
+.home .site-navigation a:hover {
+	background-color: rgba(255,255,255,0.06);
+	color: #fff;
+}
+.home .menu-toggle {
+	border-color: rgba(255,255,255,0.15);
+	color: #fff;
+}
+.home .hamburger-icon span {
+	background-color: #fff;
 }
 
 .header-wrapper {
